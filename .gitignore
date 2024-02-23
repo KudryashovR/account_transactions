@@ -143,3 +143,5 @@ dmypy.json.5
 # Here, you can add files or directories specific to your project,
 # such as locally generated files you don't want to track with Git.
 account_transactions/data
+tests/data
+*.lock
