@@ -23,7 +23,7 @@ def set_operation2():
 def set_operation3():
     temp = operation.Operation(441945886, "2019-08-26T10:50:58.294041", "EXECUTED",
                                "31957.58", "Перевод организации",
-                               "Счет 64686473678894779589", "")
+                               "Счет 64686473678894779589")
     return temp
 
 
