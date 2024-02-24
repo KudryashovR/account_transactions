@@ -16,6 +16,11 @@ class Operation:
         self.__operation_from = operation_from
         self.__operation_to = operation_to
 
+    def __lt__(self, other):
+        date1 = datetime.strptime(self.operation_date, "%d.%m.%Y")
+        date2 = datetime.strptime(other.operation_date, "%d.%m.%Y")
+        return date1 < date2
+
     def __repr__(self):
         return (f"Id транзакциии: {self.id_operation}\nИнформация о дате совершения операции: {self.operation_date}\n"
                 f"Cтатус перевода: {self.state}\nCумма операции и валюта: {self.operation_amount}\n"
@@ -26,19 +31,16 @@ class Operation:
         if self.__operation_from is not None:
             operation_from = self.__operation_from.split()
 
-            if operation_from:
-                if operation_from[0] != "Счет":
-                    card_number = operation_from[-1]
-                    formatted_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
-                else:
-                    bank_account_number = operation_from[-1]
-                    formatted_number = f"**{bank_account_number[-4:]}"
-
-                operation_from[-1] = formatted_number
-                result = " ".join(operation_from)
-                return result
+            if operation_from[0] != "Счет":
+                card_number = operation_from[-1]
+                formatted_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
             else:
-                return ""
+                bank_account_number = operation_from[-1]
+                formatted_number = f"**{bank_account_number[-4:]}"
+
+            operation_from[-1] = formatted_number
+            result = " ".join(operation_from)
+            return result
         else:
             return ""
 
