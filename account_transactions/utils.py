@@ -37,23 +37,37 @@ def load_operations(filename):
 
 def init_operations(operations_json):
     """
-    Формирует список объектов, представляющих выполнившиеся операции, из входного JSON-списка.
+    Создает список выполненных операций на основе входных данных в формате JSON.
 
-    Проходит по всем элементам входного списка словарей operations_json, и для каждого элемента,
-    у которого поле 'state' равно 'EXECUTED', создает новый объект operation.Operation с параметрами
-    из текущего элемента списка. Сохраняет эти объекты в список и возвращает его.
+    Итерируется по каждому элементу списка operations_json, проверяет состояние каждой операции. Если
+    состояние операции указано как 'EXECUTED', пытается создать объект operation.Operation с полным
+    набором данных из текущего элемента. Если не удается найти ключ 'from' в данных операции, создает
+    объект без этого поля. Операции, состояние которых не равно 'EXECUTED', игнорируются.
 
     Параметры:
-        operations_json (list): Список словарей, каждый из которых представляет операцию. Ожидается, что
-                                каждый словарь содержит ключи 'id', 'date', 'state', 'operationAmount',
-                                'description', 'to', 'from'.
+        operations_json (list of dict): список словарей, представляющих данные операций. Ожидается, что каждый
+                                        словарь содержит ключи 'id', 'date', 'state', 'operationAmount',
+                                        'description', 'to', а также опционально 'from'.
 
     Возвращает:
-        list: Список объектов operation.Operation, представляющих операции, состояние ('state') которых 'EXECUTED'.
+        list of operation.Operation: список объектов операций, где каждый объект представляет собой выполненную
+                                     операцию с возможным отсутствием информации о поле 'from'.
+
+    Исключения:
+        Функция обрабатывает KeyError для каждой операции при попытке доступа к несуществующему ключу 'from',
+        но не прерывает выполнение из-за этого исключения, позволяя добавить операцию без этого параметра.
     """
 
-    operations_list = [operation.Operation(item['id'], item['date'], item['state'], item['operationAmount'],
-                                           item['description'], item['to'], item['from'])
-                       for item in operations_json
-                       if item['state'] == 'EXECUTED']
+    operations_list = []
+
+    for item in operations_json:
+        if item['state'] == 'EXECUTED':
+            try:
+                operations_list.append(operation.Operation(item['id'], item['date'], item['state'],
+                                                           item['operationAmount'], item['description'], item['to'],
+                                                           item['from']))
+            except KeyError:
+                operations_list.append(operation.Operation(item['id'], item['date'], item['state'],
+                                                           item['operationAmount'], item['description'], item['to']))
+
     return operations_list
