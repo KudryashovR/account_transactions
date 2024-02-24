@@ -57,3 +57,14 @@ class Operation:
         operation_to[-1] = formatted_number
         result = " ".join(operation_to)
         return result
+
+    def get_date(self):
+        return self.operation_date
+
+    def get_description(self):
+        return self.description
+
+    def get_operation_amount(self):
+        amount = self.operation_amount["amount"]
+        amount_currency_name = self.operation_amount["currency"]["name"]
+        return f"{amount} {amount_currency_name}"
