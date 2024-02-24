@@ -1,6 +1,8 @@
 import os.path
 import json
 
+from account_transactions import operation
+
 
 def load_operations(filename):
     """
@@ -31,3 +33,27 @@ def load_operations(filename):
             return result
     except json.decoder.JSONDecodeError as original_error:
         raise original_error
+
+
+def init_operations(operations_json):
+    """
+    Формирует список объектов, представляющих выполнившиеся операции, из входного JSON-списка.
+
+    Проходит по всем элементам входного списка словарей operations_json, и для каждого элемента,
+    у которого поле 'state' равно 'EXECUTED', создает новый объект operation.Operation с параметрами
+    из текущего элемента списка. Сохраняет эти объекты в список и возвращает его.
+
+    Параметры:
+        operations_json (list): Список словарей, каждый из которых представляет операцию. Ожидается, что
+                                каждый словарь содержит ключи 'id', 'date', 'state', 'operationAmount',
+                                'description', 'to', 'from'.
+
+    Возвращает:
+        list: Список объектов operation.Operation, представляющих операции, состояние ('state') которых 'EXECUTED'.
+    """
+
+    operations_list = [operation.Operation(item['id'], item['date'], item['state'], item['operationAmount'],
+                                           item['description'], item['to'], item['from'])
+                       for item in operations_json
+                       if item['state'] == 'EXECUTED']
+    return operations_list
