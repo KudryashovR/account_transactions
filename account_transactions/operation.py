@@ -23,19 +23,22 @@ class Operation:
                 f"Куда: {self.get_operation_to()}")
 
     def get_operation_from(self):
-        operation_from = self.__operation_from.split()
+        if self.__operation_from is not None:
+            operation_from = self.__operation_from.split()
 
-        if operation_from:
-            if operation_from[0] != "Счет":
-                card_number = operation_from[-1]
-                formatted_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
+            if operation_from:
+                if operation_from[0] != "Счет":
+                    card_number = operation_from[-1]
+                    formatted_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
+                else:
+                    bank_account_number = operation_from[-1]
+                    formatted_number = f"**{bank_account_number[-4:]}"
+
+                operation_from[-1] = formatted_number
+                result = " ".join(operation_from)
+                return result
             else:
-                bank_account_number = operation_from[-1]
-                formatted_number = f"**{bank_account_number[-4:]}"
-
-            operation_from[-1] = formatted_number
-            result = " ".join(operation_from)
-            return result
+                return ""
         else:
             return ""
 
